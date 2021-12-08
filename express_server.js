@@ -2,7 +2,9 @@ const randomStr = function generateRandomString() {
    return  Math.floor((1 + Math.random()) * 0x1000000).toString(16).substring(1);  
 }
 const express = require("express");
+const cookieParser = require("cookie-parser");
 const app = express();
+app.use(cookieParser());
 const PORT = 8080; // default port 8080
 
 app.set("view engine", "ejs");
@@ -61,6 +63,11 @@ app.post("/urls/:shortURL/delete", (req,res) => {
     delete urlDatabase[shortURL];
     res.redirect(`/urls`);
 });
+app.post('/login', (req,res) => {
+    let username = req.body.username;
+    res.cookie('name', username);
+    res.redirect('/urls');
+})
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });

@@ -2,19 +2,26 @@ const randomStr = function generateRandomString() {
    return  Math.floor((1 + Math.random()) * 0x1000000).toString(16).substring(1);  
 }
 const express = require("express");
+
 const cookieParser = require("cookie-parser");
+
 const app = express();
 app.use(cookieParser());
 const PORT = 8080; // default port 8080
 
 app.set("view engine", "ejs");
+//Users database
+const users = {
 
+}
+//Urls database
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
 
 const bodyParser = require("body-parser");
+
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.get("/", (req, res) => {
@@ -78,6 +85,17 @@ app.post('/login', (req,res) => {
 app.post('/logout', (req, res) => {
     res.clearCookie('username');
     res.redirect('urls');
+})
+app.post("/register", (req, res) => {
+    const randomUserId = randomStr();
+    users[randomUserId] = {
+        id: randomUserId,
+        email: req.body.email,
+        password: req.body.password
+    }
+    res.cookie("user_id", users[randomUserId].id);
+    console.log(users);
+    res. redirect('/urls');
 })
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);

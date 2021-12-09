@@ -42,6 +42,9 @@ app.get("/hello", (req, res) => {
 app.get("/register", (req, res)=>{
 res.render("register.ejs");
 })
+app.get("/login", (req,res) => {
+    res.render("login.ejs");
+})
 app.get("/urls", (req,res) => {
   const templateVars = {
     urls: urlDatabase,
@@ -83,12 +86,12 @@ app.post("/urls/:shortURL/delete", (req,res) => {
     delete urlDatabase[shortURL];
     res.redirect(`/urls`);
 });
-app.post('/login', (req,res) => {
-    // let username = req.body.username;
-    // res.cookie('username', username);
-    let user = users[req.cookies["user_Id"]];  
-    res.redirect('/urls');
-})
+// app.post('/login', (req,res) => {
+//     // let username = req.body.username;
+//     // res.cookie('username', username);
+//     let user = users[req.cookies["user_Id"]];  
+//     res.redirect('/urls');
+// })
 app.post('/logout', (req, res) => {
     res.clearCookie('user_id');
     res.redirect('urls');

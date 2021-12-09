@@ -78,16 +78,19 @@ res.redirect("/login");
 });
 app.post("/urls", (req, res) => {
     let shortURL = randomStr();
-    urlDatabase[shortURL] = req.body.longURL;
+    urlDatabase[shortURL] = {
+      longURL: req.body.longURL,
+      userID: req.cookies["user_id"]
+    }
     res.redirect(`/urls/${shortURL}`);
-    console.log(req.body);  // Log the POST request body to the console
+    console.log( urlDatabase[shortURL].userID);  // Log the POST request body to the console
 });
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], user: users[req.cookies["user_id"]], };
+  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, user: users[req.cookies["user_id"]], };
   res.render("urls_show", templateVars);
 });
 app.get("/u/:shortURL", (req, res) => {
-     const longURL = urlDatabase[req.params.shortURL];
+     const longURL = urlDatabase[req.params.shortURL].longURL;
     res.redirect(longURL);
 });
 app.post("/urls/:shortURL/edit", (req,res) => {
@@ -96,7 +99,7 @@ app.post("/urls/:shortURL/edit", (req,res) => {
 });
 app.post("/urls/:shortURL/edited", (req, res) => {
    let shortURL = req.params.shortURL;
-   urlDatabase[shortURL] = req.body.longURL;
+   urlDatabase[shortURL] = {longURL: req.body.longURL};
     res.redirect("/urls");    
 });
 app.post("/urls/:shortURL/delete", (req,res) => {

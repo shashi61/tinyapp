@@ -11,8 +11,14 @@ const PORT = 8080; // default port 8080
 
 app.set("view engine", "ejs");
 //Users database
-const users = {
-
+const users = {}
+const emailLookUp = function(obj, str){
+    for(let user in obj){
+        if(obj[user].email === str){
+            return true;
+        }
+    }
+    return false;
 }
 //Urls database
 const urlDatabase = {
@@ -89,15 +95,21 @@ app.post('/logout', (req, res) => {
 })
 app.post("/register", (req, res) => {
     const user_Id = randomStr();
-    users[user_Id] = {
-        id: user_Id,
-        email: req.body.email,
-        password: req.body.password
+    const email = req.body.email;
+    if(emailLookUp(users, email) || email === "" || req.body.password === "" ){
+        res.send(404);
     }
+    else{
+        users[user_Id] = {
+            id: user_Id,
+            email,
+            password: req.body.password
+    } 
+}
     res.cookie("user_id", users[user_Id].id);
     console.log(users);
-    res. redirect('/urls');
-})
+    res.redirect('/urls');
+});
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });

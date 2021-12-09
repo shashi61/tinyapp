@@ -69,7 +69,12 @@ app.get("/urls/new", (req, res) => {
     const templateVars = {
         user: users[req.cookies["user_id"]]
     }
-    res.render("urls_new", templateVars);
+    if(templateVars.user){
+        res.render("urls_new", templateVars); 
+    }
+    else{
+res.redirect("/login");
+    }
 });
 app.post("/urls", (req, res) => {
     let shortURL = randomStr();

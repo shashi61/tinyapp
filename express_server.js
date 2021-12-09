@@ -20,6 +20,22 @@ const emailLookUp = function(obj, str){
     }
     return false;
 }
+const passwordLookUp = function(obj, str){
+    for(let user in obj){
+        if(obj[user].password === str){
+            return true;
+        }
+    }
+    return false;
+}
+const emailAndEmail = function(obj, email, password){
+    for(let user in obj){
+        if(obj[user].email === email && obj[user].password === password){
+            console.log(obj[user].id);
+            return obj[user].id;
+        }
+    }
+  }
 //Urls database
 const urlDatabase = {};
 
@@ -83,21 +99,11 @@ app.post("/urls/:shortURL/delete", (req,res) => {
     delete urlDatabase[shortURL];
     res.redirect(`/urls`);
 });
-app.post('/login', (req,res) => {
-    // let username = req.body.username;
-    // res.cookie('username', username);
-    let user = users[req.cookies["user_Id"]];  
-    res.redirect('/urls');
-})
-app.post('/logout', (req, res) => {
-    res.clearCookie('user_id');
-    res.redirect('urls');
-})
 app.post("/register", (req, res) => {
     const user_Id = randomStr();
     const email = req.body.email;
     if(emailLookUp(users, email) || email === "" || req.body.password === "" ){
-        res.send(404);
+        res.sendStatus(404);
     }
     else{
         users[user_Id] = {
@@ -109,7 +115,26 @@ app.post("/register", (req, res) => {
     res.cookie("user_id", users[user_Id].id);
     console.log(users);
     res.redirect('/urls');
-});
+})
+app.post('/login', (req,res) => {
+    // let username = req.body.username;
+    // res.cookie('username', username);
+    // let user = users[req.cookies["user_Id"]];
+    const email = req.body.email;
+    const password = req.body.password;
+    if(!emailLookUp(users, email) || !passwordLookUp(users, password) ){
+        res.sendStatus(403);   
+    }
+    else{
+        res.cookie('user_id', emailAndEmail(users, email, password));
+        res.redirect('/urls'); 
+    }   
+})
+app.post('/logout', (req, res) => {
+    res.clearCookie('user_id');
+    res.redirect('urls');
+})
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });

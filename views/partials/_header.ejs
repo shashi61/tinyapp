@@ -12,13 +12,13 @@
       </div>
       <% if(!user) { %> 
         <div class="navbar-nav">
-          <a class="nav-item nav-link" href="/register">Login</a>
-          <a class="nav-item nav-link" href="/login">Register</a>
+          <a class="nav-item nav-link" href="/login">Login</a>
+          <a class="nav-item nav-link" href="/register">Register</a>
        </div> 
       <%  } else { %>
       <div>
         <form class="form-inline my-2 my-lg-0" action="/logout" method="POST"> 
-          <h5>Logged In As: <%= user.email %></h5> 
+          <h5 style="padding-left: 0.5em;">Logged In As: <%= user.email %></h5> 
          <button type="submit" class="btn btn-outline-secondary my-2 my-sm-0">Logout</button> 
        </form>  
       </div> 

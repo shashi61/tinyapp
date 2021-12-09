@@ -21,10 +21,7 @@ const emailLookUp = function(obj, str){
     return false;
 }
 //Urls database
-const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
-};
+const urlDatabase = {};
 
 const bodyParser = require("body-parser");
 
@@ -86,12 +83,12 @@ app.post("/urls/:shortURL/delete", (req,res) => {
     delete urlDatabase[shortURL];
     res.redirect(`/urls`);
 });
-// app.post('/login', (req,res) => {
-//     // let username = req.body.username;
-//     // res.cookie('username', username);
-//     let user = users[req.cookies["user_Id"]];  
-//     res.redirect('/urls');
-// })
+app.post('/login', (req,res) => {
+    // let username = req.body.username;
+    // res.cookie('username', username);
+    let user = users[req.cookies["user_Id"]];  
+    res.redirect('/urls');
+})
 app.post('/logout', (req, res) => {
     res.clearCookie('user_id');
     res.redirect('urls');

@@ -4,6 +4,8 @@ const randomStr = function generateRandomString() {
 const express = require("express");
 
 const cookieSession = require("cookie-session");
+ 
+const getUserByEmail = require("./helpers");
 
 // const cookieParser = require("cookie-parser");
 
@@ -20,14 +22,7 @@ const PORT = 8080; // default port 8080
 app.set("view engine", "ejs");
 //Users database
 const users = {}
-const emailLookUp = function(obj, str){
-    for(let user in obj){
-        if(obj[user].email === str){
-            return true;
-        }
-    }
-    return false;
-}
+
 const passwordLookUp = function(obj, str){
     for(let user in obj){
         if(bcrypt.compareSync(str, obj[user].hashedPassword)){
@@ -38,7 +33,7 @@ const passwordLookUp = function(obj, str){
 }
 const emailAndPassword = function(obj, email, password){
     for(let user in obj){
-        if(emailLookUp(obj, email) && passwordLookUp(obj, password)){
+        if(getUserByEmail(obj, email) && passwordLookUp(obj, password)){
             console.log(obj[user].id);
             return obj[user].id;
         }
@@ -131,7 +126,7 @@ app.post("/register", (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
     const hashedPassword = bcrypt.hashSync(password, 10);
-    if(emailLookUp(users, email) || email === "" || req.body.password === "" ){
+    if(getUserByEmail(users, email) || !password || !email){
         res.sendStatus(404);
     }
     else{
@@ -152,7 +147,7 @@ app.post('/login', (req,res) => {
     // let user = users[req.cookies["user_Id"]];
     const email = req.body.email;
     const password = req.body.password;
-    if(!emailLookUp(users, email) || !passwordLookUp(users, password) ){
+    if(!getUserByEmail(users, email) || !passwordLookUp(users, password) ){
         res.sendStatus(403);   
     }
     else{
